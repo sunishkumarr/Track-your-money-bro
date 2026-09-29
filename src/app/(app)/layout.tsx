@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import AppShellClient from './app-shell-client';
 
 export default async function AppLayout({
@@ -17,8 +18,9 @@ export default async function AppLayout({
     redirect('/login');
   }
 
-  // Fetch full user profile
-  const { data: profile } = await supabase
+  // Fetch verified user profile using service role to prevent RLS recursion
+  const adminClient = createAdminClient();
+  const { data: profile } = await adminClient
     .from('users')
     .select('*')
     .eq('id', authUser.id)
