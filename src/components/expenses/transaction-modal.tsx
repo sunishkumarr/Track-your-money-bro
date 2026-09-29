@@ -34,9 +34,11 @@ export default function TransactionModal({
   if (!isOpen) return null;
 
   // Filter categories by transaction type
-  const visibleCategories = categories.filter((c) =>
-    type === 'income' ? c.is_income : !c.is_income
-  );
+  const incomeCategoryNames = ['Salary', 'Freelance', 'Interest', 'Refund', 'Gift Income', 'Other Income'];
+  const visibleCategories = categories.filter((c) => {
+    const isInc = c.is_income || incomeCategoryNames.includes(c.name);
+    return type === 'income' ? isInc : !isInc;
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

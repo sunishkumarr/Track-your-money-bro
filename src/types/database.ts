@@ -74,6 +74,7 @@ export interface Category {
   created_at: string;
   // Virtual fields (populated by queries)
   subcategories?: Category[];
+  is_income?: boolean;
 }
 
 export interface Expense {
