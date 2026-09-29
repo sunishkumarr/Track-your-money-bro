@@ -38,17 +38,22 @@ export default function AdminUserList({ initialUsers }: { initialUsers: UserRow[
 
   const updateStatus = async (userId: string, newStatus: AccountStatus) => {
     setUpdating(userId);
-    const { error } = await supabase
-      .from('users')
-      .update({ account_status: newStatus })
-      .eq('id', userId);
+    try {
+      const res = await fetch('/api/admin/update-user-status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, status: newStatus }),
+      });
 
-    if (!error) {
-      setUsers((prev) =>
-        prev.map((u) =>
-          u.id === userId ? { ...u, account_status: newStatus } : u
-        )
-      );
+      if (res.ok) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === userId ? { ...u, account_status: newStatus } : u
+          )
+        );
+      }
+    } catch (err) {
+      console.error('Failed to update status:', err);
     }
     setUpdating(null);
     router.refresh();

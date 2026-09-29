@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { redirect } from 'next/navigation';
 import AdminUserList from './admin-user-list';
 
@@ -20,10 +21,13 @@ export default async function AdminUsersPage() {
     .eq('id', user.id)
     .single();
 
-  if (profile?.role !== 'superadmin') redirect('/dashboard');
+  if (profile?.role !== 'superadmin') {
+    redirect('/dashboard');
+  }
 
-  // Fetch all users (superadmin RLS policy allows this)
-  const { data: users } = await supabase
+  // Fetch all users with admin privileges
+  const adminClient = createAdminClient();
+  const { data: users } = await adminClient
     .from('users')
     .select('id, email, first_name, last_name, date_of_birth, account_status, role, created_at')
     .order('created_at', { ascending: false });
