@@ -33,7 +33,7 @@ export default function AppShellClient({
   return (
     <div className="app-shell">
       {/* Desktop & Tablet Sidebar */}
-      <Sidebar role={user.role} />
+      <Sidebar role={user?.role} />
 
       <div className="app-body">
         {/* Top Header */}

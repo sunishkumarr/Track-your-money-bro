@@ -22,7 +22,7 @@ export default function Header({ user, onOpenAddModal }: HeaderProps) {
     router.refresh();
   };
 
-  const displayName = user.display_name || user.first_name || user.email.split('@')[0];
+  const displayName = user?.display_name || user?.first_name || user?.email?.split('@')[0] || 'User';
 
   return (
     <header className="app-header">
@@ -127,7 +127,7 @@ export default function Header({ user, onOpenAddModal }: HeaderProps) {
                 ⚙️ Settings & Layout
               </Link>
 
-              {user.role === 'superadmin' && (
+              {user?.role === 'superadmin' && (
                 <Link
                   href="/admin/users"
                   onClick={() => setDropdownOpen(false)}

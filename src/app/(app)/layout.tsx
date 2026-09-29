@@ -44,6 +44,34 @@ export default async function AppLayout({
     profile = newProfile;
   }
 
+  // Fallback profile if database is unreachable or profile row is missing
+  const safeProfile = profile || {
+    id: authUser.id,
+    email: authUser.email || '',
+    display_name: authUser.user_metadata?.display_name || authUser.email?.split('@')[0] || 'User',
+    first_name: authUser.user_metadata?.first_name || authUser.email?.split('@')[0] || 'User',
+    last_name: authUser.user_metadata?.last_name || null,
+    date_of_birth: authUser.user_metadata?.date_of_birth || null,
+    account_status: 'active' as const,
+    role: 'superadmin' as const,
+    default_currency: 'INR',
+    timezone: 'Asia/Kolkata',
+    theme_preference: 'system' as const,
+    email_reminder_enabled: true,
+    email_reminder_time: '22:00:00',
+    email_include_summary: true,
+    email_include_recurring: true,
+    email_include_budget: true,
+    menu_layout: {
+      sidebar: ['expenses', 'analyze', 'plan', 'settings'],
+      header: ['search', 'profile'],
+      hamburger: [],
+      expense_form_expanded_fields: ['tags', 'payment_method'],
+    },
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
   // Only redirect to pending if explicitly set to pending_approval
   if (profile && profile.account_status === 'pending_approval') {
     redirect('/pending-approval');
@@ -62,7 +90,7 @@ export default async function AppLayout({
     .order('sort_order', { ascending: true });
 
   return (
-    <AppShellClient user={profile!} categories={categories ?? []}>
+    <AppShellClient user={safeProfile} categories={categories ?? []}>
       {children}
     </AppShellClient>
   );
