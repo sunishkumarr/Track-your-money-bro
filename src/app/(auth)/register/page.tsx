@@ -100,7 +100,7 @@ export default function RegisterPage() {
               value={formData.first_name}
               onChange={handleChange}
               className={`auth-form__input ${errors.first_name ? 'auth-form__input--error' : ''}`}
-              placeholder="Sunish"
+              placeholder="John"
             />
             {errors.first_name && (
               <p className="auth-form__error">{errors.first_name}</p>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               value={formData.last_name}
               onChange={handleChange}
               className={`auth-form__input ${errors.last_name ? 'auth-form__input--error' : ''}`}
-              placeholder="Kumar"
+              placeholder="Doe"
             />
             {errors.last_name && (
               <p className="auth-form__error">{errors.last_name}</p>
