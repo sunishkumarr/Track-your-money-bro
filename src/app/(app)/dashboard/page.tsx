@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import DashboardView from './dashboard-view';
 import type { Expense, Category, Budget, Timeline } from '@/types/database';
 
@@ -19,15 +20,17 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
+  const adminClient = createAdminClient();
+
   // 1. Fetch user's active categories
-  const { data: categories } = await supabase
+  const { data: categories } = await adminClient
     .from('categories')
     .select('*')
     .eq('user_id', user.id)
     .order('sort_order', { ascending: true });
 
   // 2. Fetch recent expenses (last 50) with joined categories and tags
-  const { data: expenses } = await supabase
+  const { data: expenses } = await adminClient
     .from('expenses')
     .select(`
       *,
@@ -39,13 +42,13 @@ export default async function DashboardPage() {
     .limit(50);
 
   // 3. Fetch user's active budgets
-  const { data: budgets } = await supabase
+  const { data: budgets } = await adminClient
     .from('budgets')
     .select('*, category:categories(name, icon)')
     .eq('user_id', user.id);
 
   // 4. Fetch active timelines/trips
-  const { data: timelines } = await supabase
+  const { data: timelines } = await adminClient
     .from('timelines')
     .select('*')
     .eq('user_id', user.id)
